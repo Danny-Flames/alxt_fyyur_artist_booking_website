@@ -45,7 +45,7 @@
 
     <div class="form-group">
       <label for="seeking_venue">Looking for Venues</label>
-      {{ form.seeking_venue(placeholder='Venue', autofocus = true, id_='venue_look') }}
+      {{ form.seeking_venue(placeholder='Venue', autofocus = true, id_='venue_search') }}
     </div>
 
     <div class="form-group">
@@ -70,37 +70,38 @@
     const facebook_url = document.getElementById('facebook_url').value;
     const image_url = document.getElementById('image_url').value;
     const website_url = document.getElementById('website_url').value;
-    const venue_look = document.getElementById('venue_look');
+    const venue_search = document.getElementById('venue_search').checked;
     const description = document.getElementById('description').value;
 
+    const new_artist = {
+      name,
+      city,
+      state,
+      phone,
+      genres,
+      facebook_url,
+      image_url,
+      website_url,
+      venue_search,
+      description
+    }
 
-    console.log('name', name)
-    console.log('city', city)
-    console.log('state', state)
-    console.log('phone', phone)
-    console.log('genres', genres)
-    console.log('facebook', facebook_url)
-    console.log('image', image_url)
-    console.log('website', website_url)
-    console.log('venue_look', venue_look)
-    console.log('description', description)
+    console.log('new_artist', new_artist)
 
-    alert('Form submitted')
-    // fetch('/artists/create', {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     'title2': document.getElementById('title2').value
-    //   }),
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   }
-    // })
-    //   .then(res => res.json())
-    //   .then(jsonResponse => {
-    //     console.log(jsonResponse)
-        
-    //   })
-    //   .catch(err => console.log(err))
+    fetch('/artists/create', {
+      method: 'POST',
+      body: JSON.stringify({
+        'new_artist': new_artist
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then(jsonResponse => {
+        console.log(jsonResponse)
+      })
+      .catch(err => console.log('error', err))
   }
 </script>
 {% endblock %}

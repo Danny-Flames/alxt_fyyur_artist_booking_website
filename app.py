@@ -7,7 +7,7 @@ import json
 from pickle import FALSE
 import dateutil.parser
 from flask_babel import Babel
-from flask import Flask, render_template, request, Response, flash, redirect, url_for
+from flask import Flask, render_template, request, Response, flash, redirect, url_for, jsonify
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy 
 import logging
@@ -15,6 +15,8 @@ from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import * 
 from flask_migrate import Migrate
+import sys
+from os import abort
 
 
 app = Flask(__name__)
@@ -43,6 +45,7 @@ class Venue(db.Model):
     facebook_link = db.Column(db.String(120), nullable=FALSE)
     image_link = db.Column(db.String(500), nullable=FALSE)
     website_link = db.Column(db.String(500), nullable=FALSE)
+    talent_search = db.Column(db.String(500), nullable=FALSE)
     description = db.Column(db.String(500), nullable=FALSE)
     venue_shows = db.relationship('Show', backref="venue_shows", lazy=True)
 
@@ -58,6 +61,7 @@ class Artist(db.Model):
     facebook_link = db.Column(db.String(120), nullable=FALSE)
     image_link = db.Column(db.String(500), nullable=FALSE)
     website_link = db.Column(db.String(500), nullable=FALSE)
+    venue_search = db.Column(db.String(500), nullable=FALSE)
     description = db.Column(db.String(500), nullable=FALSE)
     artist_shows = db.relationship('Show', backref="artist_shows", lazy=True)
 
@@ -73,6 +77,12 @@ class Show(db.Model):
 
 class Genre(db.Model):
     __tablename__ = 'genres'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(500))
+
+class State(db.Model):
+    __tablename__ = 'states'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(500))
@@ -432,11 +442,23 @@ def create_artist_form():
 @app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
   
-  # on successful db insert, flash success
-  flash('Artist ' + request.form['name'] + ' was successfully listed!')
-  # TODO: on unsuccessful db insert, flash an error instead.
-  # e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.')
-  return render_template('pages/home.html')
+    error = False
+
+    try:
+        payload = request.get_json()['new_artist']
+        new_artist = Artist(name=payload['name'], city=payload['city'], state=payload['state'], phone=payload['phone'], genres=payload['genres'], facebook_link=payload['facebook_url'], image_link=payload['image_url'], website_link=payload['website_url'], venue_search=payload['venue_search'], description=payload['description'])
+        db.session.add(new_artist)
+        db.session.commit()
+    except:
+        error = True
+        db.session.rollback()
+        print(sys.exc_info())
+    finally:
+        db.session.close()
+        if not error:
+            return jsonify(payload)
+        else: 
+            abort(500)
 
 
 #  Shows
