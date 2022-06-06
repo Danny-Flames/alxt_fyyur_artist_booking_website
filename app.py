@@ -71,6 +71,12 @@ class Show(db.Model):
     venue_id = db.Column(db.Integer, db.ForeignKey('venues.id'), nullable=False)
     start_time = db.Column(db.String(500))
 
+class Genre(db.Model):
+    __tablename__ = 'genres'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(500))
+
 #----------------------------------------------------------------------------#
 # Filters.
 #----------------------------------------------------------------------------#
