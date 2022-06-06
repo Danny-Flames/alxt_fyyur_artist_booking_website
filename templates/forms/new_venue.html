@@ -1,63 +1,105 @@
 {% extends 'layouts/main.html' %}
-{% block title %}New Venue{% endblock %}
+{% block title %}New Artist{% endblock %}
 {% block content %}
-  <div class="form-wrapper">
-    <form method="post" class="form" action="/venues/create">
-      <h3 class="form-heading">List a new venue <a href="{{ url_for('index') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a></h3>
-      <div class="form-group">
-        <label for="name">Name</label>
-        {{ form.name(class_ = 'form-control', autofocus = true) }}
-      </div>
-      <div class="form-group">
-          <label>City & State</label>
-          <div class="form-inline">
-            <div class="form-group">
-              {{ form.city(class_ = 'form-control', placeholder='City', autofocus = true) }}
-            </div>
-            <div class="form-group">
-              {{ form.state(class_ = 'form-control', placeholder='State', autofocus = true) }}
-            </div>
-          </div>
-      </div>
-      <div class="form-group">
-        <label for="address">Address</label>
-        {{ form.address(class_ = 'form-control', autofocus = true) }}
-      </div>
-      <div class="form-group">
-          <label for="phone">Phone</label>
-          {{ form.phone(class_ = 'form-control', placeholder='xxx-xxx-xxxx', autofocus = true) }}
+<div class="form-wrapper">
+  <form method="post" class="form" id="artist-form">
+    <h3 class="form-heading">List a new artist</h3>
+    <div class="form-group">
+      <label for="name">Name</label>
+      {{ form.name(class_ = 'form-control', autofocus = true, id_='name') }}
+    </div>
+    <div class="form-group">
+      <label>City & State</label>
+      <div class="form-inline">
+        <div class="form-group">
+          {{ form.city(class_ = 'form-control', placeholder='City', autofocus = true, id_='city') }}
         </div>
-      <div class="form-group">
-        <label for="genres">Genres</label>
-        <small>Ctrl+Click to select multiple</small>
-        {{ form.genres(class_ = 'form-control', placeholder='Genres, separated by commas', autofocus = true) }}
+        <div class="form-group">
+          {{ form.state(class_ = 'form-control', placeholder='State', autofocus = true, id_='state') }}
+        </div>
       </div>
-      
-      <div class="form-group">
-          <label for="facebook_link">Facebook Link</label>
-          {{ form.facebook_link(class_ = 'form-control', placeholder='http://', autofocus = true) }}
-       </div>
-      
-       <div class="form-group">
-          <label for="image_link">Image Link</label>
-          {{ form.image_link(class_ = 'form-control', placeholder='http://', autofocus = true) }}
-       </div>
+    </div>
+    <div class="form-group">
+      <label for="phone">Phone</label>
+      {{ form.phone(class_ = 'form-control', placeholder='xxx-xxx-xxxx', autofocus = true, required=true, id_='phone') }}
+    </div>
+    <div class="form-group">
+      <label for="genres">Genres</label>
+      <small>Ctrl+Click to select multiple</small>
+      {{ form.genres(class_ = 'form-control', placeholder='Genres, separated by commas', autofocus = true, required=true, id_='genres') }}
+    </div>
+    <div class="form-group">
+      <label for="facebook_link">Facebook Link</label>
+      {{ form.facebook_link(class_ = 'form-control', placeholder='http://', autofocus = true, required=true, id_='facebook_url') }}
+    </div>
 
-       <div class="form-group">
-            <label for="website_link">Website Link</label>
-            {{ form.website_link(class_ = 'form-control', placeholder='http://', autofocus = true) }}
-       </div>
+    <div class="form-group">
+      <label for="image_link">Image Link</label>
+      {{ form.image_link(class_ = 'form-control', placeholder='http://', autofocus = true, required=true, id_='image_url') }}
+    </div>
 
-       <div class="form-group">
-             <label for="seeking_talent">Looking for Talent</label>
-             {{ form.seeking_talent(placeholder='Venue', autofocus = true) }}
-       </div>
+    <div class="form-group">
+      <label for="website_link">Website Link</label>
+      {{ form.website_link(class_ = 'form-control', placeholder='http://', autofocus = true, required=true, id_='website_url') }}
+    </div>
 
-       <div class="form-group">
-            <label for="seeking_description">Seeking Description</label>
-            {{ form.seeking_description(class_ = 'form-control', placeholder='Description', autofocus = true) }}
-       </div>
-      <input type="submit" value="Create Venue" class="btn btn-primary btn-lg btn-block">
-    </form>
-  </div>
+    <div class="form-group">
+      <label for="seeking_talent">Looking for Talent</label>
+      {{ form.seeking_talent(placeholder='Talent', autofocus = true, id_='talent_search') }}
+    </div>
+
+    <div class="form-group">
+      <label for="seeking_description">Seeking Description</label>
+      {{ form.seeking_description(class_ = 'form-control', autofocus = true, required=true, id_='description') }}
+    </div>
+    <input type="submit" value="Create Venue" class="btn btn-primary btn-lg btn-block">
+  </form>
+</div>
+
+<script>
+  // Creating a new artist 
+  
+
+  document.getElementById('artist-form').onsubmit = function (e) {
+    e.preventDefault()
+    const name = document.getElementById('name').value;
+    const city = document.getElementById('city').value;
+    const state = document.getElementById('state').value;
+    const phone = document.getElementById('phone').value;
+    const genres = document.getElementById('genres').value;
+    const facebook_url = document.getElementById('facebook_url').value;
+    const image_url = document.getElementById('image_url').value;
+    const website_url = document.getElementById('website_url').value;
+    const talent_search = document.getElementById('talent_search').checked;
+    const description = document.getElementById('description').value;
+
+    const new_venue = {
+      name,
+      city,
+      state,
+      phone,
+      genres,
+      facebook_url,
+      image_url,
+      website_url,
+      talent_search,
+      description
+    }
+
+    fetch('/venues/create', {
+      method: 'POST',
+      body: JSON.stringify({
+        'new_venue': new_venue
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then(jsonResponse => {
+        console.log(jsonResponse)
+      })
+      .catch(err => console.log('error', err))
+  }
+</script>
 {% endblock %}
