@@ -245,8 +245,10 @@ def show_venue(venue_id):
 @app.route('/venues/create', methods=['GET'])
 def create_venue_form():
   form = VenueForm()
-  
-  return render_template('forms/new_venue.html', form=form)
+  states = State.query.all()
+  genres = Genre.query.all()
+
+  return render_template('forms/new_venue.html', form=form, all_states=states, all_genres=genres)
 
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
@@ -447,7 +449,10 @@ def edit_venue_submission(venue_id):
 @app.route('/artists/create', methods=['GET'])
 def create_artist_form():
   form = ArtistForm()
-  return render_template('forms/new_artist.html', form=form) 
+  states = State.query.all()
+  genres = Genre.query.all()
+
+  return render_template('forms/new_artist.html', form=form, all_states=states, all_genres=genres) 
 
 
 @app.route('/artists/create', methods=['POST'])

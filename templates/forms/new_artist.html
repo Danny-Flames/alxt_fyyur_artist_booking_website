@@ -15,7 +15,11 @@
           {{ form.city(class_ = 'form-control', placeholder='City', autofocus = true, id_='city') }}
         </div>
         <div class="form-group">
-          {{ form.state(class_ = 'form-control', placeholder='State', autofocus = true, id_='state') }}
+          <select class="form-control" autofocus id="state">
+            {% for state in all_states %}
+            <option value="{{ state.id }}">{{ state.name }}</option>
+            {% endfor %}
+          </select>
         </div>
       </div>
     </div>
@@ -26,7 +30,11 @@
     <div class="form-group">
       <label for="genres">Genres</label>
       <small>Ctrl+Click to select multiple</small>
-      {{ form.genres(class_ = 'form-control', placeholder='Genres, separated by commas', autofocus = true, required=true, id_='genres') }}
+      <select class="form-control" autofocus id="genres">
+        {% for genre in all_genres %}
+        <option value="{{ genre.id }}">{{ genre.name }}</option>
+        {% endfor %}
+      </select>
     </div>
     <div class="form-group">
       <label for="facebook_link">Facebook Link</label>

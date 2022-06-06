@@ -1,9 +1,11 @@
 {% extends 'layouts/main.html' %}
 {% block title %}New Artist{% endblock %}
 {% block content %}
+
+{{ all_states['name'] }}
 <div class="form-wrapper">
   <form method="post" class="form" id="artist-form">
-    <h3 class="form-heading">List a new artist</h3>
+    <h3 class="form-heading">List a new venue</h3>
     <div class="form-group">
       <label for="name">Name</label>
       {{ form.name(class_ = 'form-control', autofocus = true, id_='name') }}
@@ -15,7 +17,11 @@
           {{ form.city(class_ = 'form-control', placeholder='City', autofocus = true, id_='city') }}
         </div>
         <div class="form-group">
-          {{ form.state(class_ = 'form-control', placeholder='State', autofocus = true, id_='state') }}
+          <select class="form-control" autofocus id="state">
+            {% for state in all_states %}
+            <option value="{{ state.id }}">{{ state.name }}</option>
+            {% endfor %}
+          </select>
         </div>
       </div>
     </div>
@@ -26,7 +32,11 @@
     <div class="form-group">
       <label for="genres">Genres</label>
       <small>Ctrl+Click to select multiple</small>
-      {{ form.genres(class_ = 'form-control', placeholder='Genres, separated by commas', autofocus = true, required=true, id_='genres') }}
+      <select class="form-control" autofocus id="genres">
+        {% for genre in all_genres %}
+        <option value="{{ genre.id }}">{{ genre.name }}</option>
+        {% endfor %}
+      </select>
     </div>
     <div class="form-group">
       <label for="facebook_link">Facebook Link</label>
