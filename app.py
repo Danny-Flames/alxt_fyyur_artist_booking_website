@@ -6,7 +6,7 @@ import datetime
 import json
 from pickle import FALSE
 import dateutil.parser
-from flask_babel import Babel
+import babel
 from flask import Flask, render_template, request, Response, flash, redirect, url_for, jsonify
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
@@ -21,7 +21,6 @@ from os import abort
 
 app = Flask(__name__)
 moment = Moment(app)
-babel = Babel(app)
 
 # connect to our local postgresql database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:keyboardist@localhost:5432/fyyur'
