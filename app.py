@@ -9,12 +9,12 @@ import dateutil.parser
 from flask_babel import Babel
 from flask import Flask, render_template, request, Response, flash, redirect, url_for, jsonify
 from flask_moment import Moment
-from flask_sqlalchemy import SQLAlchemy 
+from flask_sqlalchemy import SQLAlchemy
 import logging
-from logging import Formatter, FileHandler
+from logging import Formatter, FileHandler 
 from flask_wtf import Form
 from forms import * 
-from flask_migrate import Migrate
+from flask_migrate import Migrate 
 import sys
 from os import abort
 
@@ -284,6 +284,8 @@ def delete_venue(venue_id):
 #  Artists controllers
 @app.route('/artists')
 def artists():
+  artists = Artist.query.all()
+
   data=[{
     "id": 4,
     "name": "Guns N Petals",
@@ -294,6 +296,7 @@ def artists():
     "id": 6,
     "name": "The Wild Sax Band",
   }]
+
   return render_template('pages/artists.html', artists=data)
 
 @app.route('/artists/search', methods=['POST'])
@@ -311,7 +314,7 @@ def search_artists():
   }
   return render_template('pages/search_artists.html', results=response, search_term=request.form.get('search_term', ''))
 
-@app.route('/artists/<int:artist_id>')
+@app.route('/artists/<artist_id>')
 def show_artist(artist_id):
   # shows the artist page with the given artist_id
   # TODO: replace with real artist data from the artist table, using artist_id
@@ -386,8 +389,8 @@ def show_artist(artist_id):
     "past_shows_count": 0,
     "upcoming_shows_count": 3,
   }
-  data = list(filter(lambda d: d['id'] == artist_id, [data1, data2, data3]))[0]
-  return render_template('pages/show_artist.html', artist=data)
+  # data = list(filter(lambda d: d['id'] == artist_id, [data1, data2, data3]))[0]
+  return render_template('pages/show_artist.html', artist=Artist.query.get(artist_id))
 
 #  Update
 #  ----------------------------------------------------------------
